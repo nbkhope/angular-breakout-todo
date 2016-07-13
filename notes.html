@@ -1,0 +1,16 @@
+
+
+<div class="row">
+  <div class="panel panel-default">
+    <div class="panel-heading"><h3 class="panel-title">View Todo</h3></div>
+    <div class="panel-body">
+      <div class="checkbox">
+        <label><input type="checkbox" ng-model="ctrl.todo.complete"> {{ctrl.todo.content}}</label>
+        <button class="btn" ng-click="ctrl.deleteTodo(ctrl.todo.id)">
+          <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+        </button>
+      </div>
+      <a class="btn btn-primary" ui-sref="todos">Go Back</a>
+    </div>
+  </div>
+</div>
