@@ -1,4 +1,8 @@
-# angular-breakout-todo
+# Angular Breakout: Todo List
+
+A todo list app implemented with AngularJS
+
+![Demo](demo.gif)
 
 ## Running the frontend
 
