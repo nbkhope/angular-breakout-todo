@@ -1,0 +1,27 @@
+
+
+<div class="row">
+  <div class="panel panel-default">
+    <div class="panel-heading"><h3 class="panel-title">View Todo</h3></div>
+    <div class="panel-body">
+      <strong>Task:</strong> {{ctrl.todo.content}}
+      <div class="form-group">
+        <label>Description:</label>
+        <textarea
+          class="form-control"
+          rows="3"
+          ng-blur="ctrl.updateTodo(ctrl.todo)"
+          ng-model="ctrl.todo.description"></textarea>
+      </div>
+      <div class="checkbox">
+        <button class="btn btn-danger" ng-click="ctrl.deleteTodo(ctrl.todo.id)">
+          Delete
+        </button>
+      </div>
+      <label>Completed? <input type="checkbox" ng-model="ctrl.todo.complete"></label>
+    </div>
+    <div class="panel-footer">
+      <a class="btn btn-sm btn-primary" ui-sref="todos">Go Back</a>
+    </div>
+  </div>
+</div>

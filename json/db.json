@@ -1,0 +1,8 @@
+{
+  "todos": [
+    { "id": 1, "content": "Do the dishes", "complete": false, "description": "" },
+    { "id": 2, "content": "Clean my room", "complete": true, "description": "My room has been a real mess these days. I have to get myself to do some cleaning." },
+    { "id": 3, "content": "Walk the dog", "complete": true, "description": "" },
+    { "id": 4, "content": "Do the laundry", "complete": false, "description": "There are about 5 piles of laundry to do. I have been putting it off for too long. C'mon, let's do it! Just get yourself moving! I gotta do it... I really have to do it." }
+  ]
+}

@@ -1,0 +1,14 @@
+.completed-task {
+  text-decoration: line-through;
+}
+
+.todo-item, .todo-item-description {
+  border: none;
+  border-color: transparent;
+}
+
+.todo-item:hover {
+  border: 1px solid black;
+  border-radius: 3px;
+  cursor: pointer;
+}
