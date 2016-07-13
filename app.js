@@ -3,9 +3,9 @@ angular.module('todoList', ['ui.router'])
     $urlRouterProvider.otherwise('/todos');
 
     $stateProvider
-      .state('todos', function() {
+      .state('todos', {
         url: '/todos',
-        templareUrl: 'todos.html',
+        templateUrl: 'todos.html',
       })
       ;
   });
