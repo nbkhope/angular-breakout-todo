@@ -7,6 +7,9 @@
       <div ng-repeat="todo in ctrl.todos">
         <div class="checkbox">
           <label><input type="checkbox" ng-checked="todo.complete"> {{todo.content}}</label>
+          <button class="btn" ng-click="ctrl.deleteTodo(todo.id)">
+            <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+          </button>
         </div>
       </div>
       <form class="form-inline" ng-submit="ctrl.addTodo(ctrl.newTodo)">

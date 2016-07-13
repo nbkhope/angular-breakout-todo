@@ -27,12 +27,21 @@ angular.module('todoList', ['ui.router'])
       };
     };
 
+    ctrl.deleteTodo = function(todoId) {
+      for (var index in ctrl.todos) {
+        if (ctrl.todos[index].id === todoId) {
+          ctrl.todos.splice(index, 1);
+          return;
+        }
+      }
+    };
+
     ctrl.getTodos = function() {
       ctrl.todos = [
-        { content: "Do the dishes", complete: false },
-        { content: "Clean my room", complete: true },
-        { content: "Walk the dog", complete: true },
-        { content: "Do the laundry", complete: false },
+        { id: 1, content: "Do the dishes", complete: false },
+        { id: 2, content: "Clean my room", complete: true },
+        { id: 3, content: "Walk the dog", complete: true },
+        { id: 4, content: "Do the laundry", complete: false },
       ];
     };
 
