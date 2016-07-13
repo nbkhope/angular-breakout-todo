@@ -34,6 +34,11 @@ angular.module('todoList', ['ui.router'])
       };
     };
 
+    ctrl.updateTodo = function(todo) {
+      TodosModel.update(todo);
+      ctrl.getTodos();
+    };
+
     ctrl.deleteTodo = function(todoId) {
       TodosModel.destroy(todoId);
       ctrl.getTodos();
@@ -84,6 +89,15 @@ angular.module('todoList', ['ui.router'])
       todo.complete = false;
 
       todos.push(todo);
+    };
+
+    service.update = function(todo) {
+      for (var index in todos) {
+        if (todos[index].id === todo.id) {
+          todos[index] = todo;
+          return;
+        }
+      };
     };
 
     service.destroy = function(todoId) {
