@@ -6,7 +6,7 @@
     <div class="panel-body">
       <div ng-repeat="todo in ctrl.todos">
         <div class="checkbox">
-          <label><input type="checkbox" ng-model="todo.complete"> {{todo.content}}</label>
+          <label><input type="checkbox" ng-model="todo.complete"> <span ng-class="{'completed-task': todo.complete}">{{todo.content}}</span></label>
           <a class="btn" ui-sref="notes({id: todo.id})"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
           <button class="btn" ng-click="ctrl.deleteTodo(todo.id)">
             <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
