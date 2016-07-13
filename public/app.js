@@ -18,6 +18,8 @@ angular.module('todoList', ['ui.router'])
       ;
   })
 
+  .constant('ENDPOINT_URI', 'http://localhost:3000/')
+
   .controller('TodosCtrl', ['TodosModel', function(TodosModel) {
     var ctrl = this;
 
@@ -69,49 +71,29 @@ angular.module('todoList', ['ui.router'])
 
     ctrl.getTodo($stateParams.id);
   }])
-  .service('TodosModel', function() {
+
+  .service('TodosModel', ['$http', function($http) {
     var service = this;
 
-    // Fake Data
-    var todos = [
-      { id: 1, content: "Do the dishes", complete: false, description: "I have to do this by Thursday night." },
-      { id: 2, content: "Clean my room", complete: true, description: "I have to do this by Thursday night." },
-      { id: 3, content: "Walk the dog", complete: true, description: "I have to do this by Thursday night." },
-      { id: 4, content: "Do the laundry", complete: false, description: "I have to do this by Thursday night." },
-    ];
-
     service.all = function() {
-      return todos;
+      return $http.get(ENDPOINT_URI + "todos");
     };
 
     service.fetch = function(todoId) {
-      return todos.filter(function(item) { return item.id == todoId })[0];
+      return $http.get(ENDPOINT_URI + "todos/" + todoId);
     };
 
     service.create = function(todo) {
-      todo.id = todos[todos.length - 1].id + 1;
-      todo.complete = false;
-
-      todos.push(todo);
+      return $http.post(ENDPOINT_URI + "todos", todo);
     };
 
-    service.update = function(todo) {
-      for (var index in todos) {
-        if (todos[index].id === todo.id) {
-          todos[index] = todo;
-          return;
-        }
-      };
+    service.update = function(todoId, todo) {
+      return $http.put(ENDPOINT_URI + "todos/" + todoId, todo);
     };
 
     service.destroy = function(todoId) {
-      for (var index in todos) {
-        if (todos[index].id === todoId) {
-          todos.splice(index, 1);
-          return;
-        }
-      }
+      return $http.delete(ENDPOINT_URI + "todos/" + todoId);
     };
 
-  })
+  }])
   ;
