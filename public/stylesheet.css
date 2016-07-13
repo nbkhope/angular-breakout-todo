@@ -2,7 +2,7 @@
   text-decoration: line-through;
 }
 
-.todo-item {
+.todo-item, .todo-item-description {
   border: none;
   border-color: transparent;
 }

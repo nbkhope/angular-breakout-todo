@@ -63,6 +63,10 @@ angular.module('todoList', ['ui.router'])
       $state.go('todos');
     };
 
+    ctrl.updateDescription = function(todo) {
+      ctrl.todo = TodosModel.update(todo);
+    };
+
     ctrl.getTodo($stateParams.id);
   }])
   .service('TodosModel', function() {
@@ -70,10 +74,10 @@ angular.module('todoList', ['ui.router'])
 
     // Fake Data
     var todos = [
-      { id: 1, content: "Do the dishes", complete: false },
-      { id: 2, content: "Clean my room", complete: true },
-      { id: 3, content: "Walk the dog", complete: true },
-      { id: 4, content: "Do the laundry", complete: false },
+      { id: 1, content: "Do the dishes", complete: false, description: "I have to do this by Thursday night." },
+      { id: 2, content: "Clean my room", complete: true, description: "I have to do this by Thursday night." },
+      { id: 3, content: "Walk the dog", complete: true, description: "I have to do this by Thursday night." },
+      { id: 4, content: "Do the laundry", complete: false, description: "I have to do this by Thursday night." },
     ];
 
     service.all = function() {
