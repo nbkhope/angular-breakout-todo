@@ -1,1 +1,14 @@
-This is the todos list
+
+
+<div class="row">
+  <div class="panel panel-default">
+    <div class="panel-heading"><h3 class="panel-title">My Todo List</h3></div>
+    <div class="panel-body">
+      <div ng-repeat="todo in ctrl.todos">
+        <div class="checkbox">
+          <label><input type="checkbox" ng-checked="todo.complete"> {{todo.content}}</label>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
