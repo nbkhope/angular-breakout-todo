@@ -1,5 +1,9 @@
 # angular-breakout-todo
 
+A todo list app implemented with AngularJS
+
+![Demo](demo.gif)
+
 ## Running the frontend
 
 You can use any simple server you would like to serve static HTML. For this project, I will just use a simple npm module called **serve** that allows you to run a simple HTTP server:
