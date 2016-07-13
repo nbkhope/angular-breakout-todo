@@ -15,6 +15,18 @@ angular.module('todoList', ['ui.router'])
   .controller('TodosCtrl', function() {
     var ctrl = this;
 
+    ctrl.newTodo = {
+      content: ""
+    };
+
+    ctrl.addTodo = function(todo) {
+      ctrl.todos.push(todo);
+
+      ctrl.newTodo = {
+        content: ""
+      };
+    };
+
     ctrl.getTodos = function() {
       ctrl.todos = [
         { content: "Do the dishes", complete: false },

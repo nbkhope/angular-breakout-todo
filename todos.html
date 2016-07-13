@@ -9,6 +9,14 @@
           <label><input type="checkbox" ng-checked="todo.complete"> {{todo.content}}</label>
         </div>
       </div>
+      <form class="form-inline" ng-submit="ctrl.addTodo(ctrl.newTodo)">
+        <div class="form-group">
+          <input class="form-control" type="text" ng-model="ctrl.newTodo.content" placeholder="Enter something to do...">
+          <button class="btn btn-success" type="submit">
+            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </div>
