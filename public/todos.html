@@ -15,8 +15,8 @@
               ng-model="todo.content">
           </label>
           <a class="btn" ui-sref="notes({id: todo.id})"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
-          <button class="btn" ng-click="ctrl.deleteTodo(todo.id)">
-            <span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+          <button class="btn btn-sm" ng-click="ctrl.deleteTodo(todo.id)">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
           </button>
         </div>
       </div>
