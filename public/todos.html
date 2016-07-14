@@ -8,7 +8,10 @@
         <div ng-repeat="todo in ctrl.todos">
           <div class="checkbox">
             <label>
-              <input type="checkbox" ng-model="todo.complete">
+              <input
+                type="checkbox"
+                ng-blur="ctrl.updateTodo(todo)"
+                ng-model="todo.complete">
             </label>
             <input
               type="text"

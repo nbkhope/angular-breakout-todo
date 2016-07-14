@@ -18,6 +18,8 @@ angular.module('todoList', ['ui.router'])
       ;
   })
 
+  .constant('ENDPOINT_URI', 'http://localhost:3000/')
+
   .controller('TodosCtrl', ['TodosModel', function(TodosModel) {
     var ctrl = this;
 
@@ -25,29 +27,52 @@ angular.module('todoList', ['ui.router'])
       content: ""
     };
 
-    ctrl.addTodo = function(todo) {
-      TodosModel.create(todo);
-      ctrl.getTodos();
+    ctrl.getTodos = function() {
+      TodosModel.all()
+        .then(function(response) {
+          ctrl.todos = response.data;
+        })
+        .catch(function(error) {
+          console.log("Error loading todos:");
+          console.log(error);
+        })
+        .finally(function() {
+          console.log("Finished loading all todos :)");
+        });
+    };
 
-      ctrl.newTodo = {
-        content: ""
-      };
+    ctrl.addTodo = function(todo) {
+      TodosModel.create(todo)
+        .then(function(response) {
+          // Update list of todos on the current view
+          ctrl.getTodos();
+        })
+        .catch(function(error) {
+          // handle error here
+        })
+        .finally(function() {
+          ctrl.newTodo = {
+            content: ""
+          };
+        });
     };
 
     ctrl.updateTodo = function(todo) {
-      TodosModel.update(todo);
-      ctrl.getTodos();
+      TodosModel.update(todo.id, todo)
+        .then(function(response) {
+          // Update list of todos on the current view
+          ctrl.getTodos();
+        });
     };
 
     ctrl.deleteTodo = function(todoId) {
-      TodosModel.destroy(todoId);
-      ctrl.getTodos();
+      TodosModel.destroy(todoId)
+        .then(function(response) {
+          ctrl.getTodos();
+        });
     };
 
-    ctrl.getTodos = function() {
-      ctrl.todos = TodosModel.all();
-    };
-
+    // Retrieve all the todos the first time the view is loaded
     ctrl.getTodos();
   }])
 
@@ -55,63 +80,59 @@ angular.module('todoList', ['ui.router'])
     var ctrl = this;
 
     ctrl.getTodo = function(todoId) {
-      ctrl.todo = TodosModel.fetch(todoId);
+      TodosModel.fetch(todoId)
+        .then(function(response) {
+          ctrl.todo = response.data;
+        });
     }
 
+    ctrl.updateTodo = function(todo) {
+      TodosModel.update(todo.id, todo)
+        .then(function(response) {
+          // do nothing
+        })
+        .catch(function(error) {
+          console.log("Failed to update todo #" + todo.id);
+        });
+    };
+
     ctrl.deleteTodo = function(todoId) {
-      TodosModel.destroy(todoId);
-      $state.go('todos');
+      TodosModel.destroy(todoId)
+        .then(function(response) {
+          // Go back to the list of todos after deleting this specific one
+          // You can use $state.go to go to a specific state (aka route)
+          // Besides this, using the attribute ui-sref in <a> tags also
+          // does the same thing
+          $state.go('todos');
+        });
     };
 
-    ctrl.updateDescription = function(todo) {
-      ctrl.todo = TodosModel.update(todo);
-    };
-
+    // Retrieve the todo item the first time the controller is loaded
     ctrl.getTodo($stateParams.id);
   }])
-  .service('TodosModel', function() {
+
+  .service('TodosModel', ['$http', 'ENDPOINT_URI', function($http, ENDPOINT_URI) {
     var service = this;
 
-    // Fake Data
-    var todos = [
-      { id: 1, content: "Do the dishes", complete: false, description: "I have to do this by Thursday night." },
-      { id: 2, content: "Clean my room", complete: true, description: "I have to do this by Thursday night." },
-      { id: 3, content: "Walk the dog", complete: true, description: "I have to do this by Thursday night." },
-      { id: 4, content: "Do the laundry", complete: false, description: "I have to do this by Thursday night." },
-    ];
-
     service.all = function() {
-      return todos;
+      return $http.get(ENDPOINT_URI + "todos");
     };
 
     service.fetch = function(todoId) {
-      return todos.filter(function(item) { return item.id == todoId })[0];
+      return $http.get(ENDPOINT_URI + "todos/" + todoId);
     };
 
     service.create = function(todo) {
-      todo.id = todos[todos.length - 1].id + 1;
-      todo.complete = false;
-
-      todos.push(todo);
+      return $http.post(ENDPOINT_URI + "todos", todo);
     };
 
-    service.update = function(todo) {
-      for (var index in todos) {
-        if (todos[index].id === todo.id) {
-          todos[index] = todo;
-          return;
-        }
-      };
+    service.update = function(todoId, todo) {
+      return $http.put(ENDPOINT_URI + "todos/" + todoId, todo);
     };
 
     service.destroy = function(todoId) {
-      for (var index in todos) {
-        if (todos[index].id === todoId) {
-          todos.splice(index, 1);
-          return;
-        }
-      }
+      return $http.delete(ENDPOINT_URI + "todos/" + todoId);
     };
 
-  })
+  }])
   ;
