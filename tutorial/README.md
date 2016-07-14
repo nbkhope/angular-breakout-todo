@@ -29,7 +29,8 @@ Here is an example of a todo in JSON format:
   "id": 2,
   "content": "Clean my room",
   "complete": true,
-  "description": "My room has been a real mess these days." },
+  "description": "My room has been a real mess these days."
+}
 ```
 
 We are going to write an app that performs all the CRUD operations on the collection of todos.
