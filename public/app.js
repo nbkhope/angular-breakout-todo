@@ -1,10 +1,13 @@
 angular.module('todoList', ['ui.router'])
 
+  // Define the URL that will be used to hit the backend API
   .constant('ENDPOINT_URI', 'http://localhost:3000/')
 
   .config(function($stateProvider, $urlRouterProvider) {
+    // The default route if request does not match any of the specific routes below
     $urlRouterProvider.otherwise('/todos');
 
+    // Specify all the routes (called states) here
     $stateProvider
       .state('todos', {
         url: '/todos',
