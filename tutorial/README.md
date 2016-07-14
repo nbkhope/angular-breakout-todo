@@ -180,3 +180,141 @@ serve -p 9000 public/
 ```
 
 You can access your web application at http://localhost:9000/
+
+![app running](images/placeholder_template.png)
+
+After accessing the application using the browser, you will notice the URL was redirected to `/#/todos`, which makes sense because we set that as the default route. You will see your placeholder text in that page, indicating everything went well and you app is running fine.
+
+We got the basic structure of the app laid out pretty well, now let us turn to making a controller for the `todos` state (i.e. `/todos` route).
+
+## Creating the TodosCtrl and TodosModel
+
+We will associate a **controller** with each view in our app. Every time the todos template page is loaded, its controller will also be loaded. In that controller, we will store the list of todo items in an array. But the data will come from a **service** that, in turn, will query the backend for the information. The service will pass a **promise** back to the controller. It  will then have to handle that promise and perform the right operations accordingly in order to modify the view and make the data appear in sync with the backend.
+
+Create the file todos-controller.js:
+
+```
+touch public/todos/todos-controller.js
+```
+
+Then add the following contents:
+
+```
+angular.module('todoList')
+  .controller('TodosCtrl', ['TodosModel', function(TodosModel) {
+
+  }]);
+```
+
+The first argument to the controller is its name. The second argument is, if there is no dependency injection, just an anonymous function that defines the controller. In our case, we are [injecting](https://docs.angularjs.org/guide/di) TodosModel, which is the name of the **service** that we will be creating next to communicate with the backend. Because of that, we have to make the second argument of the controller to be an array.
+
+To create the TodosModel file, create the following file structure:
+
+```
+mkdir -p public/common/models
+touch public/common/models/todos-model.js
+```
+
+I placed the todos-model.js under the directory common/ because the service will be shared between different controllers. This is just a file structure convention I chose to follow; you can choose your own.
+
+Add the following to todos-model.js:
+
+```
+angular.module('todoList')
+  .service('TodosModel', ['$http', 'ENDPOINT_URI', function($http, ENDPOINT_URI) {
+
+  }]);
+```
+
+Again, we are just defining the TodosModel, but not doing anything in particular there. We inject the $http service in order to be able to make requests to the backend. Then, we need to inject an ENDPOINT_URI constant that will hold the backend location. For our purposes, we will be just defining that constant in `app.js`, in between `angular.module` and `.config`:
+
+```javascript
+angular.module('todoList', ['ui.router'])
+
+  // Define the URL that will be used to hit the backend API
+  .constant('ENDPOINT_URI', 'http://localhost:3000/')
+
+  .config(function($stateProvider, $urlRouterProvider) {
+```
+
+Before moving on, let us not forget to add the new js files we made to our list of scripts in `index.html`:
+
+```
+<!-- Custom Scripts -->
+<script src="app.js"></script>
+<script src="common/models/todos-model.js"></script>
+<script src="todos/todos-controller.js"></script>
+```
+
+If you reload your app, you will see nothing has changed. That is because there is nothing going on in the controller. Let us go back to the todos.tmpl.html template and fill it up with some mock information. I am going to use a Bootstrap panel as the container for the todo list. Feel free to come up with your own user interface, if you wish.
+
+```
+<div class="row">
+  <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3">
+    <div class="panel panel-default">
+
+      <div class="panel-heading"><h3 class="panel-title">My Todo List</h3></div>
+
+      <div class="panel-body">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox">
+          </label>
+          <input type="text" class="todo-item" value="Do the laundry">
+          <a class="btn"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+          <button class="btn btn-sm">
+            <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+          </button>
+        </div>
+
+        <form class="form-inline" novalidate>
+          <div class="form-group">
+            <input class="form-control" type="text" placeholder="Enter something to do..." required>
+            <button class="btn btn-success" type="submit">
+              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+```
+
+![mock ui](mock_ui.png)
+
+Also, define some custom CSS to eliminate the border of `<input>` text elements, except on hover, and some CSS to strike through completed items.
+
+```
+touch public/stylesheet.css
+```
+
+Add the following to `stylesheet.css`:
+
+```
+.completed-task {
+  text-decoration: line-through;
+}
+
+.todo-item, .todo-item-description {
+  border: none;
+  border-color: transparent;
+}
+
+.todo-item:hover {
+  border: 1px solid black;
+  border-radius: 3px;
+  cursor: pointer;
+}
+```
+
+Don't forget to include the style using a `<link>` tag, right before the end of the `<head>` tag, after including the CSS for Bootstrap:
+
+```
+<link rel="stylesheet" href="stylesheet.css">
+```
+
+As a note, not all those styles will not be working right away. We will be using the Angular directive `ng-class` to dynamically apply classes later on, given the state of a todo item. For example, we will apply the  .completed-task class only if the item's `complete` attribute has been set to true.
+
+Ultimately, we will have a list of todo items and each todo item can be crossed out or deleted completely. Furthermore, you can inspect each todo item to go to the "notes" page, where you will see a more detailed description for the todo. At the bottom, you have the option of creating a new todo item.
