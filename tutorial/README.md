@@ -282,7 +282,7 @@ If you reload your app, you will see nothing has changed. That is because there 
 </div>
 ```
 
-![mock ui](mock_ui.png)
+![mock ui](images/mock_ui.png)
 
 Also, define some custom CSS to eliminate the border of `<input>` text elements, except on hover, and some CSS to strike through completed items.
 
