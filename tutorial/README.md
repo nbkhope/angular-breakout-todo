@@ -102,7 +102,7 @@ The `public/` directory will be used to store the files for the app itself. Insi
 
 Let's break down what is going on in the index file.
 
-We add the ng-app "attribute" (actually called an Angular directive) to the `<html>` tag to give control of our page to Angular. Essentially that makes the whole page an Angular app, whose name is given by whatever you defined in the attribute (in this case, we are called our app `todoList`). You only need to do this once for the whole application.
+We add the **ng-app** "attribute" (actually called an Angular directive) to the `<html>` tag to give control of our page to Angular. Essentially that makes the whole page an Angular app, whose name is given by whatever you defined in the attribute (in this case, we are calling our app `todoList`). You only need to do this once for the whole application.
 
 Then, in the `<head>`, we add some meta tags for responsiveness before `<title>` because I chose to use Bootstrap as the user interface framework. You are free to choose whatever framework you like or even not use one at all. Note we place the link to the Bootstrap CSS styles after the `<title>` tag.
 
