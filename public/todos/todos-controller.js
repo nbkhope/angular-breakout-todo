@@ -37,6 +37,7 @@ angular.module('todoList')
     };
 
     ctrl.updateTodo = function(todo) {
+      console.log("updateTodo!")
       TodosModel.update(todo.id, todo)
         .then(function(response) {
           // Update list of todos on the current view

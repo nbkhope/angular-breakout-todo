@@ -22,7 +22,7 @@
         <label>Completed?
           <input
             type="checkbox"
-            ng-blur="ctrl.updateTodo(ctrl.todo)"
+            ng-change="ctrl.updateTodo(ctrl.todo)"
             ng-model="ctrl.todo.complete">
         </label>
       </div>
