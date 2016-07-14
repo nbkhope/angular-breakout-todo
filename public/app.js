@@ -1,4 +1,7 @@
 angular.module('todoList', ['ui.router'])
+
+  .constant('ENDPOINT_URI', 'http://localhost:3000/')
+  
   .config(function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/todos');
 
@@ -17,5 +20,4 @@ angular.module('todoList', ['ui.router'])
       })
       ;
   })
-  .constant('ENDPOINT_URI', 'http://localhost:3000/')
   ;
