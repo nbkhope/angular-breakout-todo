@@ -1,5 +1,7 @@
 # Tutorial: Making a Todo List with Angular 1.5
 
+![demo app](images/todolist.png)
+
 ## Requirements
 
 You are going to need:
