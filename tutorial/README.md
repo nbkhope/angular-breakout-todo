@@ -149,3 +149,34 @@ You use **$urlRouterProvider** to set up the default route if the user tries to 
 Then, you use **$stateProvider** to set up all the routes for the application. Each route is set up using the state() function, that takes as parameters first the name of the state and then an object with options for that specific state (aka route). The most basic parameters for a state would be **url** and **template** (or **templateUrl** if not an inline template).
 
 Here we use `/todos` as the URL and `todos/todos.tmpl.html` as the template file (which we will be creating later). You can also add a **controller** to the specific route. In this case, we will be creating a `TodosCtrl` later and using it for this route. Using the `controllerAs` property allows you to refer to the controller by an alias. I chose "ctrl" to be short and clear. Otherwise, you would have to type TodosCtrl every time you wanted to access a property stored in the controller.
+
+## Making the Todos Template
+
+Now that we have our first route in place, let us make the template for that route. Create a directory named `todos` within the `public/` directory and create the todos.tmpl.html file:
+
+```
+mkdir public/todos
+touch public/todos/todos.tmpl.html
+```
+
+You could named your template whatever you want, I just chose `.tmpl.html` as my convention for template filename extensions. Inside that file, type in something arbitrary just as a placeholder for now:
+
+```
+<h1>This is the todos.tmpl.html template</h1>
+```
+
+## Getting the System Up and Running
+
+Now with our first template in place and the states (aka routes) all set up, let us power up our app and see what it looks like. For that, we will be using a Node module called **serve** to start a simple frontend server. You can install it using:
+
+```
+npm install -g serve
+```
+
+Then, run the server from the app root directory using:
+
+```
+serve -p 9000 public/
+```
+
+You can access your web application at http://localhost:9000/
