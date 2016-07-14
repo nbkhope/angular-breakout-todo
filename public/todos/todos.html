@@ -1,0 +1,38 @@
+
+
+<div class="row">
+  <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3">
+    <div class="panel panel-default">
+      <div class="panel-heading"><h3 class="panel-title">My Todo List</h3></div>
+      <div class="panel-body">
+        <div ng-repeat="todo in ctrl.todos">
+          <div class="checkbox">
+            <label>
+              <input
+                type="checkbox"
+                ng-change="ctrl.updateTodo(todo)"
+                ng-model="todo.complete">
+            </label>
+            <input
+              type="text"
+              ng-class="[{'completed-task': todo.complete}, 'todo-item']"
+              ng-blur="ctrl.updateTodo(todo)"
+              ng-model="todo.content">
+            <a class="btn" ui-sref="notes({id: todo.id})"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+            <button class="btn btn-sm" ng-click="ctrl.deleteTodo(todo.id)">
+              <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+        <form name="ctrl.createForm" class="form-inline" ng-submit="ctrl.addTodo(ctrl.newTodo)" novalidate>
+          <div class="form-group">
+            <input class="form-control" type="text" ng-model="ctrl.newTodo.content" placeholder="Enter something to do..." required>
+            <button class="btn btn-success" type="submit" ng-disabled="ctrl.createForm.$invalid">
+              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
