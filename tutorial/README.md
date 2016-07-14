@@ -115,3 +115,37 @@ Between `<body>` and the scripts at the bottom, we have a div that will hold the
 ```
 
 Note that we used CDN links for all the styles and external scripts. Feel free to download them locally if you prefer.
+
+## Defining the Initial App Script
+
+Now let us write some code in `app.js` to define our Angular application in JavaScript. Add the following to `app.js`:
+
+```javascript
+angular.module('todoList', ['ui.router'])
+
+  .config(function($stateProvider, $urlRouterProvider) {
+    // The default route if request does not match any of the specific routes below
+    $urlRouterProvider.otherwise('/todos');
+
+    // Specify all the routes (called states) here
+    $stateProvider
+      .state('todos', {
+        url: '/todos',
+        templateUrl: 'todos/todos.tmpl.html',
+        controller: 'TodosCtrl',
+        controllerAs: 'ctrl',
+      })
+      ;
+  })
+  ;
+```
+
+In the script above, we define a module to hold our todoList app. The first argument to `angular.module()` is the name of the app and the second argument is an array of all the dependencies or external modules you will be using. You should pass the array of dependencies (even if empty) the first time you call `angular.module()` to create a new module. Here we are just using one external module: `ui.router`.
+
+After setting up the module, we chain the function call to the config() method to set up all the routes (called states) for UI Router. You will need two arguments for the callback provided to config: $stateProvider and $urlRouterProvider.
+
+You use **$urlRouterProvider** to set up the default route if the user tries to go somewhere you have not defined a specific route. In this case, we want to point the user to `/todos` in case that happens. This is somewhat similar to defining a root route.
+
+Then, you use **$stateProvider** to set up all the routes for the application. Each route is set up using the state() function, that takes as parameters first the name of the state and then an object with options for that specific state (aka route). The most basic parameters for a state would be **url** and **template** (or **templateUrl** if not an inline template).
+
+Here we use `/todos` as the URL and `todos/todos.tmpl.html` as the template file (which we will be creating later). You can also add a **controller** to the specific route. In this case, we will be creating a `TodosCtrl` later and using it for this route. Using the `controllerAs` property allows you to refer to the controller by an alias. I chose "ctrl" to be short and clear. Otherwise, you would have to type TodosCtrl every time you wanted to access a property stored in the controller.
