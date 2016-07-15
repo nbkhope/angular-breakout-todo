@@ -516,3 +516,82 @@ The pattern found in the functions defined in `todos-controller.js` will be usef
 Now let us turn that mock template into an actual list of todo items that updates dynamically and talks to the backend via the controller TodosCtrl through the TodosModel service.
 
 We already defined TodosCtrl as the controller for the todos.tmpl.html template when we defined our routes in `app.js`.
+
+Update the `todos.tmpl.html` file with the following:
+
+```
+<div class="row">
+  <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3">
+    <div class="panel panel-default">
+
+      <div class="panel-heading"><h3 class="panel-title">My Todo List</h3></div>
+
+      <div class="panel-body">
+        <div ng-repeat="todo in ctrl.todos">
+          <div class="checkbox">
+            <label>
+              <input
+                type="checkbox"
+                ng-change="ctrl.updateTodo(todo)"
+                ng-model="todo.complete">
+            </label>
+            <input
+              type="text"
+              ng-class="[{'completed-task': todo.complete}, 'todo-item']"
+              ng-blur="ctrl.updateTodo(todo)"
+              ng-model="todo.content">
+            <a class="btn" ui-sref="notes({id: todo.id})"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+            <button class="btn btn-sm" ng-click="ctrl.deleteTodo(todo.id)">
+              <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+
+        <form name="ctrl.createForm" class="form-inline" ng-submit="ctrl.addTodo(ctrl.newTodo)" novalidate>
+          <div class="form-group">
+            <input class="form-control" type="text" ng-model="ctrl.newTodo.content" placeholder="Enter something to do..." required>
+            <button class="btn btn-success" type="submit" ng-disabled="ctrl.createForm.$invalid">
+              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+```
+
+We use the **ng-repeat** directive to generate a div for each todo item. The way that works is that you say:
+
+`ng-repeat="todo in ctrl.todos"`
+
+And it works similar to a for loop: for every "iteration", it makes a div with the data available as "todo", retrieved from the array of todos called `ctrl.todos`, which is defined in the controller.
+
+Angular directives may be attached as custom attributes to HTML or as the tag name themselves. In the code above, there are many directives that work like an HTML attribute. Here is a list and their description:
+
+|directive|description|
+|---|---|
+|ng-change|when the `<input>` value is modified, will trigger a call to the function given|
+|ng-model|binds the `<input>` to a variable defined in the controller|
+|ng-blur|when you leave the `<input>`, a trigger will be fired to call the given function|
+|ng-click|when the element is clicked, trigger a call to the given function|
+|ng-submit|will trigger a call to the given function when the form is submitted|
+|ng-disabled|disables the attached element if the given condition is true|
+|ng-class|applies the CSS class(es) if given condition is true|
+
+Out of the directives above, one you should remember really well is **ng-model**. With that, you can bind the value of an input field with a JavaScript variable. That is called two-way data binding. To verify that, you can always display the value of some variable in the template using {{somevariable}} inside two curly braces.
+
+You might have noticed that the anchor tag `<a>` for the magnifying glass icon for each todo has a `ui-sref` attribute instead of `href`. That is a directive from Angular UI Router and allows you to change to another state after clicking the link. In our case, it is a link to change to the notes state, passing an object of parameters inside parenthesis. We will be creating that `notes` state next.
+
+Now, it is time for you to check your app and see how it is working. Keep your `db.json` file open while you perform some testing on the browser. You will notice the fake database change as you do CRUD operations on the frontend. Clicking the magnifying glass will not work just yet because we have not defined the `notes` state.
+
+![demo app](images/todolist.png)
+
+Note: you might modify your original database and erase all the items there. To get it back to its original state, I suggest you keep the file db.json version-controlled at that fixed initial state, so whenever you wanted to "re-seed" the db with initial values, you could just do:
+
+```
+git checkout -- json/db.json
+```
+
+To display the value of variables defined in the controller, you can use the double-curly braces notation: `{{ctrl.todo.content}}`
