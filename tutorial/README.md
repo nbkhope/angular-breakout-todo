@@ -246,6 +246,8 @@ Before moving on, let us not forget to add the new js files we made to our list 
 <script src="todos/todos-controller.js"></script>
 ```
 
+## Going back to the Template
+
 If you reload your app, you will see nothing has changed. That is because there is nothing going on in the controller. Let us go back to the todos.tmpl.html template and fill it up with some mock information. I am going to use a Bootstrap panel as the container for the todo list. Feel free to come up with your own user interface, if you wish.
 
 ```
@@ -318,3 +320,67 @@ As a note, not all those styles will not be working right away. We will be using
 ![mock ui](images/mock_ui.png)
 
 Ultimately, we will have a list of todo items and each todo item can be crossed out or deleted completely. Furthermore, you can inspect each todo item to go to the "notes" page, where you will see a more detailed description for the todo. At the bottom, you have the option of creating a new todo item.
+
+## Talking to the Backend: Defining the Service
+
+Before we can go on and set up the controller to modify the view, let us define a service to communicate with the backend and talk to the controller. Usually one would start by defining the controller for the template and make some mock data variables there. Then, as you develop the app, you would promote that data to a service, which in turn you would promote to a backend and would use the service to only communicate with that backend. But here we are going to first build the service, so that the controller will have access to it. Then, we will build the controller to call upon the service to provide information that will be rendered in the view.
+
+Inside `todos-model.js`, add the following functions:
+
+```javascript
+angular.module('todoList')
+  .service('TodosModel', ['$http', 'ENDPOINT_URI', function($http, ENDPOINT_URI) {
+    var service = this;
+
+    service.all = function() {
+      return $http.get(ENDPOINT_URI + "todos");
+    };
+
+    service.fetch = function(todoId) {
+      return $http.get(ENDPOINT_URI + "todos/" + todoId);
+    };
+
+    service.create = function(todo) {
+      return $http.post(ENDPOINT_URI + "todos", todo);
+    };
+
+    service.update = function(todoId, todo) {
+      return $http.put(ENDPOINT_URI + "todos/" + todoId, todo);
+    };
+
+    service.destroy = function(todoId) {
+      return $http.delete(ENDPOINT_URI + "todos/" + todoId);
+    };
+
+  }]);
+```
+
+Each function is just performing a request to the backend for a specific CRUD operation. For example, the all() function asks the backend for all the items in the todo list. The $http service is used to make that request to the backend. It is important to note the $http service returns a **promise**, which will be handled in the controller, not here in the service; we need only return that promise from the function.
+
+Side note: I use `var service = this;` just so I do not have to type `this`. Using a more descriptive variable name might be less confusing than just having `this`, which might be ambiguous in JavaScript. You are welcome to just use `this`.
+
+The argument to `$http.get()` is just the ENDPOINT URI used to hit the backend. Here, for the all() function, we are actually just doing:
+
+```
+return $http.get('http://localhost:3000/todos');
+```
+
+Remember that the ENDPOINT_URI constant is defined in `app.js` and was injected into the TodosModel so we can use it.
+
+The endpoints follow a RESTful API, so it should be no trouble for you to understand. Now let us power up our fake backend using JSON server. First install the npm module:
+
+```
+npm install -g json-server
+```
+
+Then, **cd** to the `json/` directory and run the command:
+
+```
+json-server --watch db.json
+```
+
+By default, the backend API will be available at http://localhost:3000/
+
+## Defining the Controller
+
+With the service now in place, we can proceed to define the controller and finally be able to render some data in the template.
