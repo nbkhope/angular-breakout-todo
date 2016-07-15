@@ -383,4 +383,136 @@ By default, the backend API will be available at http://localhost:3000/
 
 ## Defining the Controller
 
-With the service now in place, we can proceed to define the controller and finally be able to render some data in the template.
+With the service now in place, we can proceed to define the controller and finally be able to render some data in the template. Add the following code to `todos-controller.js`:
+
+```javascript
+angular.module('todoList')
+  .controller('TodosCtrl', ['TodosModel', function(TodosModel) {
+    var ctrl = this;
+
+    ctrl.newTodo = {
+      content: ""
+    };
+
+    ctrl.getTodos = function() {
+      TodosModel.all()
+        .then(function(response) {
+          ctrl.todos = response.data;
+        })
+        .catch(function(error) {
+          console.log("Error loading todos:");
+          console.log(error);
+        })
+        .finally(function() {
+          console.log("Finished loading all todos :)");
+        });
+    };
+
+    ctrl.addTodo = function(todo) {
+      TodosModel.create(todo)
+        .then(function(response) {
+          // Update list of todos on the current view
+          ctrl.getTodos();
+        })
+        .catch(function(error) {
+          // handle error here
+        })
+        .finally(function() {
+          ctrl.newTodo = {
+            content: ""
+          };
+        });
+    };
+
+    ctrl.updateTodo = function(todo) {
+      console.log("updateTodo!")
+      TodosModel.update(todo.id, todo)
+        .then(function(response) {
+          // Update list of todos on the current view
+          ctrl.getTodos();
+        });
+    };
+
+    ctrl.deleteTodo = function(todoId) {
+      TodosModel.destroy(todoId)
+        .then(function(response) {
+          ctrl.getTodos();
+        });
+    };
+
+    // Retrieve all the todos the first time the view is loaded
+    ctrl.getTodos();
+  }]);
+```
+
+The first line in the controller is `var ctrl = this;`, something I used to be more clearer about the context for each of the functions I defined. You can instead just use `this.whatever` to define all the functions in the controller. I do not recommend using `$scope` because that will go away in Angular 2. Rather, just stick to using `this` and `controllerAs` to achieve the same outcome.
+
+Before defining all the functions to establish communication between the controller and the service, I create a new object (`ctrl.newTodo`) that will represent the new todo item at the bottom of the template, the one with the plus `+` sign next to it. That object only has a `content` property, which will be eventually bound to the `<input>` text via two-way data binding.
+
+There are four function definitions in the controller:
+
+* ctrl.getTodos()
+* ctrl.addTodo()
+* ctrl.updateTodo()
+* ctrl.deleteTodo()
+
+They all call upon the `TodosModel` to perform either of those operations:
+
+* all()
+* fetch()
+* create()
+* update()
+* destroy()
+
+At the end of the controller definition, we just call `ctrl.getTodos()` to retrieve all the todo items for display in the template. Every time you go to the route `/todos`, the template and controller will be rebuilt and that function will get called to make sure the template has access to all the todos. That is, variables defined in the controller via `this` (or `$scope`) will also be available in the template.
+
+Let us now focus on the `ctrl.getTodos()` function: we call the function `TodosModel.all()` and then we have to handle the **promise** that is passed back from that service function. Keep this in mind: in the controller we are just going to handle the **promise** passed back from the servie using the following pattern:
+
+```javascript
+TodosModel.something()
+  .then(function(response) {
+    // Do something if we got the data successfully
+  })
+  .catch(function(error) {
+    // Handle the error
+  })
+  .finally(function() {
+    // Do something no matter what after got some response back (with/without error)
+  });
+```
+
+I might not use all the three (then, catch, finally), but at least have a `then` to do something in case you get some response sucessfully.
+
+With that in mind, look at the definition for getTodos():
+
+```
+ctrl.getTodos = function() {
+  TodosModel.all()
+    .then(function(response) {
+      ctrl.todos = response.data;
+    })
+    .catch(function(error) {
+      console.log("Error loading todos:");
+      console.log(error);
+    })
+    .finally(function() {
+      console.log("Finished loading all todos :)");
+    });
+};
+```
+
+If we successfully query the todo items from the backend, we will take those items and store in the `ctrl.todos` variable that belongs to the controller itself. Otherwise, we will just console log the error. We also use a `finally` to demonstrate its use (you will always get the message saying the todos were loaded, no matter what).
+
+When you want to create a todo, you just call ctrl.addTodo() and pass the new todo as an argument. In this case, we will actually be passing `ctrl.newTodo`, which was defined in the beginning of the controller definition, from the template as we attach an event to call addTodo() when the new todo item inside `<input>` is submitted. More on that later.
+
+For the `ctrl.updateTodo()` function, you also pass the todo that will be updated.
+
+For `ctrl.deleteTodo()`, you just pass the id of the todo item that will be destroyed.
+
+The pattern found in the functions defined in `todos-controller.js` will be useful when defining other controllers, as all you have to do is pretty much copy and paste those patterns.
+
+## Adjusting the Todos Template for Dynamic View
+
+Now let us turn that mock template into an actual list of todo items that updates dynamically and talks to the backend via the controller TodosCtrl through the TodosModel service.
+
+We already defined TodosCtrl as the controller for the todos.tmpl.html template when we defined our routes in `app.js`.
