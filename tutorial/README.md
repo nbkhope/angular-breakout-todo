@@ -748,6 +748,6 @@ Here are some suggestions for you:
 * Allow the user to add an image to a todo
 * Display a `Loading...` message or animation during the period where you have to wait for the data to be fetched from the backend
 * Add user authentication to your app, maybe via [Firebase](https://firebase.google.com/), which you would could then implement as a real backend.
-* Try something like [Gridster](https://github.com/ManifestWebDesign/angular-gridster) to make animated todos like a post-it notes
+* Try something like [Gridster](https://github.com/ManifestWebDesign/angular-gridster) to make animated todos like post-it notes
 
 I have been greatly influenced by [Lukas Ruebbelke](https://github.com/simpulton) and his way of building Angular applications. Check out his profile. I also highly recommend his videos on Angular.
