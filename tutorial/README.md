@@ -503,7 +503,7 @@ ctrl.getTodos = function() {
 
 If we successfully query the todo items from the backend, we will take those items and store in the `ctrl.todos` variable that belongs to the controller itself. Otherwise, we will just console log the error. We also use a `finally` to demonstrate its use (you will always get the message saying the todos were loaded, no matter what).
 
-When you want to create a todo, you just call ctrl.addTodo() and pass the new todo as an argument. In this case, we will actually be passing `ctrl.newTodo`, which was defined in the beginning of the controller definition, from the template as we attach an event to call addTodo() when the new todo item inside `<input>` is submitted. More on that later.
+When you want to create a todo, you just call ctrl.addTodo() and pass the new todo as an argument. In this case, we will actually be passing `ctrl.newTodo`, which was defined in the beginning of the controller definition, from the template as we attach an event to call addTodo() when the new todo item inside `<input>` is submitted. For the `finally`, we clear up the newTodo variable to allow room for a new todo once the old one has been submitted.
 
 For the `ctrl.updateTodo()` function, you also pass the todo that will be updated.
 
@@ -594,4 +594,132 @@ Note: you might modify your original database and erase all the items there. To 
 git checkout -- json/db.json
 ```
 
-To display the value of variables defined in the controller, you can use the double-curly braces notation: `{{ctrl.todo.content}}`
+## Extending the App with a New Template
+
+Now let us create a new template that will be the more detailed page about the todo. That will be the page for the magnifying glass link in the `todos` template. Let us call that template `notes`:
+
+```
+mkdir public/notes
+touch public/notes.tmpl.html
+```
+
+Note that we organize our app structure by feature and not by just a specific type of Angular element (like controller or view).
+For the `notes.tmpl.html` file, add the following:
+
+
+```html
+<div class="row">
+  <div class="col-xs-10 col-xs-offset-1 col-sm-6 col-sm-offset-3">
+    <div class="panel panel-default">
+
+      <div class="panel-heading"><h3 class="panel-title">View Todo</h3></div>
+
+      <div class="panel-body">
+        <strong>Task:</strong> {{ctrl.todo.content}}
+        <div class="form-group">
+          <label>Description:</label>
+          <textarea
+            class="form-control"
+            rows="3"
+            ng-blur="ctrl.updateTodo(ctrl.todo)"
+            ng-model="ctrl.todo.description"></textarea>
+        </div>
+
+        <div class="checkbox">
+          <button class="btn btn-danger" ng-click="ctrl.deleteTodo(ctrl.todo.id)">
+            Delete
+          </button>
+        </div>
+
+        <label>Completed?
+          <input
+            type="checkbox"
+            ng-change="ctrl.updateTodo(ctrl.todo)"
+            ng-model="ctrl.todo.complete">
+        </label>
+      </div>
+
+      <div class="panel-footer">
+        <a class="btn btn-sm btn-primary" ui-sref="todos">Go Back</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+```
+
+The code for the notes view is very similar to the one for `todos`, except now we just show one todo item and also its detailed `description` (instead of just its content field).
+
+Recall that to display the value of variables defined in the controller, you can use the double-curly braces notation: `{{ctrl.todo.content}}`.
+
+Everything looks good for the template, except that state is not yet defined. Let us go to the `app.js` file and define the `notes` state:
+
+```javascript
+    $stateProvider
+      .state('todos', {
+        url: '/todos',
+        templateUrl: 'todos/todos.tmpl.html',
+        controller: 'TodosCtrl',
+        controllerAs: 'ctrl',
+      })
+      .state('notes', {
+        url: '/todos/:id/notes',
+        templateUrl: 'notes/notes.tmpl.html',
+        controller: 'NotesCtrl',
+        controllerAs: 'ctrl',
+      })
+      ;
+```
+
+Note how we use URL params inside the url for the notes state: here the :id will be some variable URL parameter that will determine which specific todo item you are inspecting. For the templateUrl, we have already created that. Now, this new state will have its own controller, called `NotesCtrl`. Let us go ahead and define that controller. It will be somewhat similar to the `TodosCtrl`, except we just deal with a single todo instead of a collection of todos. Create the file at  `public/notes/notes-controller.js` and add the following contents:
+
+```javascript
+angular.module('todoList')
+  .controller('NotesCtrl', ['$stateParams', '$state', 'TodosModel', function($stateParams, $state, TodosModel) {
+    var ctrl = this;
+
+    ctrl.getTodo = function(todoId) {
+      TodosModel.fetch(todoId)
+        .then(function(response) {
+          ctrl.todo = response.data;
+        });
+    }
+
+    ctrl.updateTodo = function(todo) {
+      TodosModel.update(todo.id, todo)
+        .then(function(response) {
+          // do nothing
+        })
+        .catch(function(error) {
+          console.log("Failed to update todo #" + todo.id);
+        });
+    };
+
+    ctrl.deleteTodo = function(todoId) {
+      TodosModel.destroy(todoId)
+        .then(function(response) {
+          // Go back to the list of todos after deleting this specific one
+          // You can use $state.go to go to a specific state (aka route)
+          // Besides this, using the attribute ui-sref in <a> tags also
+          // does the same thing
+          $state.go('todos');
+        });
+    };
+
+    // Retrieve the todo item the first time the controller is loaded
+    ctrl.getTodo($stateParams.id);
+  }]);
+```
+
+For the NotesCtrl, we inject $stateParams so that we have access to whatever was passed through the URL (remember the :id we talked about before). You can access it using simply `$stateParams.id`
+
+We inject `$state` in order to use it to change state (aka route) from the controller. That is done when you delete the todo item using the Delete button. You can just say, for example, `$state.go('todos')`, to change to the `todos` state.
+
+Finally, the last thing injected into the controller is the `TodosModel`, because we need a way to manipulate the todo data in the backend.
+
+The functions in `NotesCtrl` are much like the ones in the `TodosCtrl`, except you just deal with one todo item and you have to specify its id using $stateParams. Recall that to pass parameters via $stateParams, you can use ui-sref as a directive for an anchor tag `<a>` and pass it as an object like so:
+
+```
+<!-- example from todos.tmpl.html -->
+<a ui-sref="notes({id: todo.id})">...</a>
+```
