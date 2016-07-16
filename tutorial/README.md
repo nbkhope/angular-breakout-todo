@@ -594,7 +594,7 @@ Note: you might modify your original database and erase all the items there. To 
 git checkout -- json/db.json
 ```
 
-## Extending the App with a New Template
+## Extending the App with a New Template and its Controller
 
 Now let us create a new template that will be the more detailed page about the todo. That will be the page for the magnifying glass link in the `todos` template. Let us call that template `notes`:
 
@@ -671,7 +671,7 @@ Everything looks good for the template, except that state is not yet defined. Le
       ;
 ```
 
-Note how we use URL params inside the url for the notes state: here the :id will be some variable URL parameter that will determine which specific todo item you are inspecting. For the templateUrl, we have already created that. Now, this new state will have its own controller, called `NotesCtrl`. Let us go ahead and define that controller. It will be somewhat similar to the `TodosCtrl`, except we just deal with a single todo instead of a collection of todos. Create the file at  `public/notes/notes-controller.js` and add the following contents:
+Note how we use URL params inside the url for the notes state: here the **:id** will be some variable URL parameter that will determine which specific todo item you are inspecting. For the templateUrl, we have already created that. Now, this new state will have its own controller, called `NotesCtrl`. Let us go ahead and define that controller. It will be somewhat similar to the `TodosCtrl`, except we just deal with a single todo instead of a collection of todos. Create the file at  `public/notes/notes-controller.js` and add the following contents:
 
 ```javascript
 angular.module('todoList')
