@@ -1,6 +1,6 @@
 # Angular Breakout: Todo List
 
-A todo list app implemented with AngularJS
+A todo list app implemented with AngularJS. See the step-by-step tutorial on how to build it [here](tutorial/README.md).
 
 ![Demo](demo.gif)
 
