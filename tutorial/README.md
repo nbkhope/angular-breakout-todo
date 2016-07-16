@@ -600,7 +600,7 @@ Now let us create a new template that will be the more detailed page about the t
 
 ```
 mkdir public/notes
-touch public/notes.tmpl.html
+touch public/notes/notes.tmpl.html
 ```
 
 Note that we organize our app structure by feature and not by just a specific type of Angular element (like controller or view).
@@ -723,3 +723,31 @@ The functions in `NotesCtrl` are much like the ones in the `TodosCtrl`, except y
 <!-- example from todos.tmpl.html -->
 <a ui-sref="notes({id: todo.id})">...</a>
 ```
+
+To finish up our application, let us not forget to add the new controller to the list of scripts in `app.js`:
+
+```html
+<!-- Custom Scripts -->
+<script src="app.js"></script>
+<script src="common/models/todos-model.js"></script>
+<script src="todos/todos-controller.js"></script>
+<script src="notes/notes-controller.js"></script>
+```
+
+Now, take a look at the notes page from any of the todo items you might have.
+
+![notes view](images/todo_notes.png)
+
+## Conclusion
+
+So we come to the end of this tutorial. You have built an Angular app that has all the CRUD operations in place! Congratulations! Now, you can expand on what you have here and try many new things. Look at the documentation for Angular to find out more about [directives](https://docs.angularjs.org/guide/directive) and ways to make your app more dynamic and interesting.
+
+Here are some suggestions for you:
+
+* Allow the user to add multiple notes (or comments?) for a single todo
+* Allow the user to add an image to a todo
+* Display a `Loading...` message or animation during the period where you have to wait for the data to be fetched from the backend
+* Add user authentication to your app, maybe via [Firebase](https://firebase.google.com/), which you would could then implement as a real backend.
+* Try something like [Gridster](https://github.com/ManifestWebDesign/angular-gridster) to make animated todos like a post-it notes
+
+I have been greatly influenced by [Lukas Ruebbelke](https://github.com/simpulton) and his way of building Angular applications. Check out his profile. I also highly recommend his videos on Angular.
